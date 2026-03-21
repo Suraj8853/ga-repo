@@ -1,10 +1,20 @@
 name: hello-pipeline
 
 on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Deploy to which env"
+        required: true
+        default: 'staging'
+        type: choice
+        options: [staging,production]
   push:
     branches: [main]
   pull_request:
     branches: [main]
+  schedule:
+    - cron: '0 9 * * 1'  
 jobs:
   greet:
     runs-on: ubuntu-latest
