@@ -1,0 +1,28 @@
+name: new-pipeline
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: ['ubuntu-latest,windows-latest,macos-latest']
+        node: [18,20]
+    runs-on: ${{matrix.os}}
+    steps:
+      run: npm test
+
+  notify-failure:
+    runs-on: ubuntu-latest
+    needs: test
+    if: failure()
+    run: echo "Notifying team about failure"
+  
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test
+    if: success()
+    steps:
+      - run: echo "Deploying....."
