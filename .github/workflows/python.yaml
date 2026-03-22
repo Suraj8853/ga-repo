@@ -4,6 +4,8 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+env:
+  MY_SECRET: ${{secrets.MY_SECRET}}
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -13,3 +15,5 @@ jobs:
         with:
           python-version: 3.11   
       - run: python --version
+      - name: use repository secret
+        run: echo "$MY_SECRET"
