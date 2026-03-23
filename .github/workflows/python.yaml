@@ -17,3 +17,22 @@ jobs:
       - run: python --version
       - name: use repository secret
         run: echo "$MY_SECRET"
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+             mkdir output
+             echo "built" > output/result.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build-result
+          path: output/
+          retention-days: 3
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: 
+          name: build-result
+      - run: cat result.txt   
