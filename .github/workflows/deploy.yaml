@@ -35,7 +35,10 @@ jobs:
         run: |
               echo "$KUBE_CONFIG_DATA" | base64 -d > kubeconfig.yaml
               export KUBECONFIG=kubeconfig.yaml
-              kubectl create deployment ga-app --image=$ECR_REGISTRY/$ECR_REPOSITORY:${{github.sha}} \
-               --dry-run=client -o yaml | kubectl apply -f -
-              kubectl rollout status deployment/ga-app
+              kubectl delete deployment ga-app --ignore-not-found
+              kubectl create deployment ga-app \
+              --image=$ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}
+              kubectl patch deployment ga-app \
+              --patch '{"spec":{"template":{"spec":{"imagePullSecrets":[{"name":"ecr-secret"}]}}}}'
+               kubectl rollout status deployment/ga-app --timeout=120s
   
