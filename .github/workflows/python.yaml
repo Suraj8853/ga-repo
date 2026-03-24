@@ -2,8 +2,10 @@ name: python-node
 on:
   push:
     branches: [main]
+    paths: ['python.yml', '.github/workflows/python.yml']
   pull_request:
     branches: [main]
+  
 env:
   MY_SECRET: ${{secrets.MY_SECRET}}
 jobs:
