@@ -1,4 +1,4 @@
-name: Build and deploy the pipelines
+name: Build and deploy the pipeline
 on:
   push: 
     branches: [main]
