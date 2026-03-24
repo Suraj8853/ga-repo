@@ -31,10 +31,11 @@ jobs:
       - name:  deploy to k3s
         env:
           KUBE_CONFIG_DATA: ${{secrets.KUBECONFIG_SECRET}}
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
               echo "$KUBE_CONFIG_DATA" | base64 -d > kubeconfig.yaml
               export KUBECONFIG=kubeconfig.yaml
-              kubectl create deployment ga-app --image=${{steps.login-ecr-outputs.registry}}/$ECR_REPOSITORY:${{github.sha}} \
+              kubectl create deployment ga-app --image=$ECR_REGISTRY/$ECR_REPOSITORY:${{github.sha}} \
                --dry-run=client -o yaml | kubectl apply -f -
               kubectl rollout status deployment/ga-app
   
