@@ -1,0 +1,40 @@
+name: Build and deploy
+on:
+  push: 
+    branches: [main]
+env:
+  AWS_REGION: ap-southeast-2
+  ECR_REPOSITORY: ga-repo
+  IMAGE_NAME: ga-repo
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - names: Configure AWS Credentials via oidc
+        uses:  aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::599476212737:role/github-actions-ecr-role
+          aws-region: ap-southeast-2
+      - name: Login to ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+      - name: build and push to ecr
+        env:
+          ECR_REGISTRY: ${{steps.login-ecr.outputs.registry}}
+        run: |
+             docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:${{github.sha}} .
+             docker push $ECR_REGISTRY/$ECR_REPOSITORY:${{github.sha}} 
+      - name:  deploy to k3s
+        env:
+          KUBE_CONFIG_DATA: ${{secrets.KUBECONFIG_SECRET}}
+          run: |
+               echo "$KUBE_CONFIG_DATA" > kubeconfig.yaml
+               export KUBECONFIG=kubeconfig.yaml
+               kubectl create deployment ga-app --image=${{steps.login-ecr-outputs.registry}}/$ECR_REPOSITORY:${{github.sha}} \
+               --dry-run=client -o yaml | kubectl apply -f -
+               kubectl rollout status deployment/ga-app
+  
