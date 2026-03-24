@@ -14,7 +14,7 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
-      - names: Configure AWS Credentials via oidc
+      - name: Configure AWS Credentials via oidc
         uses:  aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::599476212737:role/github-actions-ecr-role
