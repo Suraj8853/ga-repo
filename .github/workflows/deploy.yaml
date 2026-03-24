@@ -2,6 +2,7 @@ name: Build and deploy the pipelines
 on:
   push: 
     branches: [main]
+    paths: ['.github/workflows/deploy.yml']
 env:
   AWS_REGION: ap-southeast-2
   ECR_REPOSITORY: ga-repo
