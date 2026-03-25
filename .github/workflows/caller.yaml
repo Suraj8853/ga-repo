@@ -5,7 +5,7 @@ on:
     paths: ['.github/workflows/caller.yaml']
 jobs:
   deploy-to-dev:
-    uses: ./.github/workflows/reusable-deploy.yaml
+    uses: ./.github/workflows/reuseable-deploy.yaml
     with:
       environment: dev
     secrets: inherit
