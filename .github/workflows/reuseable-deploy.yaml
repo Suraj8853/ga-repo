@@ -1,0 +1,15 @@
+name: reusable-deploy
+on:
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        required: true
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{inputs.environment}}
+    steps:
+      - run: echo "Deplying to ${{inputs.environment}}"
+
+

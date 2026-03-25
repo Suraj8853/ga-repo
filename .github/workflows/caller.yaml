@@ -1,0 +1,17 @@
+name: caller pipeline
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/deploy.yaml']
+jobs:
+  deploy-to-dev:
+    uses: ./.github/workflows/reusable-deploy.yaml
+    with:
+      environment: dev
+    secrets: inherit
+
+  deploy-to-prod:
+    uses: ./.github/workflows/reusable-deploy.yaml
+    with:
+      environemnt: production
+    secrets: inherit
