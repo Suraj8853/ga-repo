@@ -1,4 +1,4 @@
-name: caller pipeline
+name: caller
 on:
   push:
     branches: [main]
