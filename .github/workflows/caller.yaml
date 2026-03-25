@@ -2,7 +2,7 @@ name: caller
 on:
   push:
     branches: [main]
-    paths: ['.github/workflows/deploy.yaml']
+    paths: ['.github/workflows/caller.yaml']
 jobs:
   deploy-to-dev:
     uses: ./.github/workflows/reusable-deploy.yaml
