@@ -1,0 +1,28 @@
+name: caller1
+on:
+  push:
+    branches: [main]
+    paths: ['./.githubs/workflows/caller1.yaml']
+jobs:
+  dev:
+    uses: ./.github/workflows/reuseable-deploy1.yaml
+    with:
+      environment: dev
+      image_tag: v1.0.0
+    secrets: inherit
+  staging:
+     uses: ./.github/workflows/reuseable-deploy1.yaml
+     needs: dev
+     with:
+       environment: staging
+       image_tag: v1.0.0
+     secrets: inherit
+  production:
+    uses: ./.github/workflows/reuseable-deploy1.yaml
+    needs: staging
+    with:
+      environment: production
+      image_tag: v1.0.0
+    secrets: inherit
+    
+
