@@ -12,6 +12,7 @@ jobs:
 
   deploy-to-prod:
     uses: ./.github/workflows/reuseable-deploy.yaml
+    needs: deploy-to-dev
     with:
-      environemnt: production
+      environment: production
     secrets: inherit
