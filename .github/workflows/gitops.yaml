@@ -1,0 +1,47 @@
+name: gitops-pipeline
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/gitops.yaml'
+
+env:
+  AWS_REGION: ap-southeast-2
+  ECR_REPOSITORY: ga-repo
+jobs:
+  build-and-update-manifest:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::599476212737:role/github-actions-ecr-role
+          aws-region: ap-southeast-2
+      - name: login to ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+      - name: build and push image to ECR
+        env:
+          ECR_REGISTRY: ${{steps.login-ecr.outputs.registry}}
+        run: |
+            docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:${{github.sha}} .
+            docker push $ECR_REGISTRY/$ECR_REPOSITORY:${{github.sha}}
+      - name: update manifest repo
+        env:
+          ECR_REGISTRY: ${{steps.login-ecr.outputs.registry}}
+        run: |          
+             git clone https://x-access-token:${{secrets.GITOPS_PAT}}@github.com/Suraj8853/gitops-manifests.git
+             cd gitops-manifests
+             sed -i "s|image: .*|image: $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}|" dev/deployment.yaml
+             git config user.email "surajpai8853@gmail.com"
+             git config user.name   "suraj8853"
+             git add .
+             git commit -m "update image to ${{ github.sha }}"
+             git push
+
+    
+ 
