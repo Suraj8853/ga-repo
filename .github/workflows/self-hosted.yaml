@@ -3,7 +3,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'github/workflows/self-hosted.yaml'
+      - '.github/workflows/self-hosted.yaml'
 jobs:
   test:
     runs-on: self-hosted
