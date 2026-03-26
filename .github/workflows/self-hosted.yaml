@@ -1,0 +1,13 @@
+name: self hosted runner
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'github/workflows/self-hosted.yaml'
+jobs:
+  test:
+    runs-on: self-hosted
+    steps:
+    - run: echo "Running on self-hosted runner"
+    - run: whoami
+    - run: hostname
