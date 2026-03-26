@@ -39,6 +39,7 @@ jobs:
              sed -i "s|image: .*|image: $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}|" dev/deploy.yaml
              git config user.email "surajpai8853@gmail.com"
              git config user.name   "suraj8853"
+             git remote set-url origin https://x-access-token:${{ secrets.GITOPS_PAT }}@github.com/Suraj8853/gitops-manifests.git
              git add .
              git commit -m "update image to ${{ github.sha }}"
              git push
