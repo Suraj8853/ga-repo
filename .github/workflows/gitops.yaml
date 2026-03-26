@@ -1,4 +1,4 @@
-name: gitops-pipeline updated
+name: gitops-pipeline updated with
 on:
   push:
     branches: [main]
